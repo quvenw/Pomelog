@@ -1,0 +1,229 @@
+.white-mode-wrapper{
+    width: 100%;
+    height: 1000px;
+    margin: auto;
+
+    .wrapper{
+        width: 60%;
+        height: auto;
+        margin: auto;
+        padding: 20px;
+
+        .toolbar-section{
+            width: 100%;
+            height: 100px;
+            background-color: #EEEEEE;
+            box-shadow: 0 5px #bebdbd;
+            margin-top: 20px;
+
+            .toolbar-item{
+                height: 100px;
+                text-align: center;
+                cursor: pointer;
+                color: #363636;
+
+                i{
+                    font-size: 25px;
+                    margin-top: 25px;
+                }
+
+                p{
+                    padding-top: 10px;
+                }
+            }
+
+            .toolbar-item:hover{
+                background-color: #FFFFFF;
+            }
+        }
+
+        .filter-section{
+            width: 100%;
+            height: 60px;
+            margin-top: 50px;
+            display: flex;         
+
+            .filter-input{
+                width: 60%;
+                padding: 5px;
+                font-size: 20px;
+            }
+
+            .select-input{
+                width: 10%;
+            }
+
+            .add-filter{
+                width: 5%;
+                background-color: #FFFFFF;
+                border: 1px solid #000000;
+            }
+
+            .add-filter:hover{
+                background-color: darkorange;
+                color: #FFFFFF;
+            }
+
+            .time-window-input{
+                width: 20%;
+            }
+
+            .search-filter{
+                width: 5%;
+                background-color: #EEEEEE;
+                border: 1px solid #000000;
+            }
+
+            .search-filter:hover{
+                background-color: #0096FF;
+                color: #FFFFFF;
+            }
+        }
+
+        .filter-display-section{
+            width: 100%;
+            height: auto;
+            background-color: #EEEEEE;
+            padding: 20px;
+
+            p{
+                font-size: 20px;
+            }
+
+            i{
+                font-size: 20px;
+                cursor: pointer;
+            }
+
+            i:hover{
+                color: red;
+            }
+        }
+    }
+
+    @media only screen and (max-width: 1600px){
+        .wrapper{
+            position: relative;
+            width: 70%;
+        }
+    }
+
+    @media only screen and (max-width: 900px){
+        .wrapper{
+            position: relative;
+            width: 90%;
+        }
+    }
+}
+
+.dark-mode-wrapper{
+    width: 100%;
+    height: 1000px;
+    margin: auto;
+    background-color: #181717;
+
+    .wrapper{
+        width: 60%;
+        height: auto;
+        margin: auto;
+        padding: 20px;
+
+        .toolbar-section{
+            width: 100%;
+            height: 100px;
+            background-color: #181717;
+            margin-top: 20px;
+
+            .toolbar-item{
+                height: 100px;
+                text-align: center;
+                cursor: pointer;
+                color: #FFFFFF;
+
+                i{
+                    font-size: 25px;
+                    margin-top: 25px;
+                }
+
+                p{
+                    padding-top: 10px;
+                }
+            }
+
+            .toolbar-item:hover{
+                border-radius: 10px;
+                color: #000000;
+            }
+        }
+
+        .filter-section{
+            width: 100%;
+            height: 60px;
+            margin-top: 50px;
+            display: flex;         
+
+            .filter-input{
+                width: 60%;
+                padding: 5px;
+                font-size: 20px;
+                background-color: #181717;
+                color: #FFFFFF;
+                border: 1px solid #FFFFFF;
+            }
+
+            .select-input{
+                width: 10%;
+                background-color: #181717;
+                color: #FFFFFF;
+                border: 1px solid #FFFFFF;
+            }
+
+            .add-filter{
+                width: 5%;
+                background-color: #181717;
+                color: #FFFFFF;
+                border: 1px solid #FFFFFF;
+            }
+
+            .add-filter:hover{
+                background-color: #FFFFFF;
+                border: 1px solid #FFFFFF;
+                color: #000000;
+            }
+
+            .time-window-input{
+                width: 20%;
+                background-color: #181717;
+                color: #FFFFFF;
+                border: 1px solid #FFFFFF;
+            }
+
+            .search-filter{
+                width: 5%;
+                background-color: #181717;
+                color: #FFFFFF;
+                border: 1px solid #FFFFFF;
+            }
+
+            .search-filter:hover{
+                background-color: #FFFFFF;
+                color: #000000;
+                border: 1px solid #FFFFFF;
+            }
+        }
+    }
+
+    @media only screen and (max-width: 1600px){
+        .wrapper{
+            position: relative;
+            width: 70%;
+        }
+    }
+
+    @media only screen and (max-width: 900px){
+        .wrapper{
+            position: relative;
+            width: 90%;
+        }
+    }
+}

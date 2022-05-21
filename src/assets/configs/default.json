@@ -1,0 +1,19 @@
+{
+    "fields": [
+        "timestamp",
+        "environment",
+        "tenant",
+        "applicationName",
+        "level",
+        "logger",
+        "assemblyVersion",
+        "callingClass",
+        "callingMethod",
+        "processId",
+        "processName",
+        "message"
+    ],
+    "sign": "=",
+    "separator": ";",
+    "significantField": "level"
+}

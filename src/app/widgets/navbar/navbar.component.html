@@ -1,0 +1,11 @@
+<nav>
+    <div class="row">
+        <div class="col-4">
+            <div class="nav-brand">{{title}}</div>
+        </div>
+
+        <div class="col-8">
+            <p-inputSwitch title="Dark mode theme" class="dark-mode-switch" [(ngModel)]="darkMode" (click)="onThemModeChange(darkMode)"></p-inputSwitch>
+        </div>
+    </div>
+</nav>

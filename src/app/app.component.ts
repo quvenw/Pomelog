@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LogFilter } from './models/log-filter.model';
 import { PomelogService } from './services/pomelog.service';
 
@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+    this.loadDefaultConfigJson();
   }
 
   // Assigning dark mode
@@ -57,8 +57,12 @@ export class AppComponent implements OnInit {
       let result = fileReader?.result?.toString().replace(/\r\n/g,'\n').split('\n');
 
       result?.forEach(r => {
-        console.log(r);
+        //console.log(r);
       });
     }
+  }
+
+  public loadDefaultConfigJson(): void{
+    this._pomelogService.loadDefaultConfigFile();
   }
 }

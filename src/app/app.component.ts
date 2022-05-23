@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LogFilter } from './models/log-filter.model';
+import { LogLevel } from './models/log-level.model';
+import { LogLine } from './models/log-line.model';
+import { PomelogKeyValuePair } from './models/pomelog.keyvalue.pair.model';
 import { PomelogService } from './services/pomelog.service';
 
 @Component({
@@ -13,12 +16,17 @@ export class AppComponent implements OnInit {
   public file: any;
 
   public filterCriteriaList: LogFilter[] = [];
+  public selectedLog?: PomelogKeyValuePair<LogLevel[]>;
+  public logs: string[] = [];
+  public fileLines: LogLine[] = [];
+  public selectedLevels: PomelogKeyValuePair<boolean>[] = [];
 
   constructor(private _pomelogService: PomelogService){
   }
 
   ngOnInit(): void {
-    this.loadDefaultConfigJson();
+    this.loadAvailableLogs();
+    this.loadSelectedLogSchema('Serilog');
   }
 
   // Assigning dark mode
@@ -49,20 +57,49 @@ export class AppComponent implements OnInit {
 
   // Read file when selected
   public onFileSelected(e: any): void{
-    const file: File = e.target.files[0];
-    const fileReader = new FileReader();
+    const uploadedFile: File = e.target.files[0];
+    this.file = uploadedFile;
+    this.loadFile(this.file);
+  }
 
-    fileReader.readAsText(file);
-    fileReader.onload = () => {
-      let result = fileReader?.result?.toString().replace(/\r\n/g,'\n').split('\n');
+  // Load file
+  public loadFile(file: File): void{
+    this.fileLines = this._pomelogService.readFile(file, this.selectedLog as PomelogKeyValuePair<LogLevel[]>);
+  }
 
-      result?.forEach(r => {
-        //console.log(r);
-      });
+  // Load available logs
+  public loadAvailableLogs(): void{
+    this.logs = this._pomelogService.getAvailableLogs();
+  }
+
+  // Load selected log schema
+  public loadSelectedLogSchema(log: string): void{
+    this.selectedLog = this._pomelogService.getLogSchema(log);
+    this.loadFile(this.file);
+  }
+
+  // On level tag selected
+  public onLevelSelected(level: string): void{
+    if(!this.selectedLevels.find(x => x.key === level)){
+      this.selectedLevels.push({ key: level, value: true});
+    }else{
+      let index = this.selectedLevels.findIndex(x => x.key === level);
+
+      if(index >= 0){
+        if(this.selectedLevels[index].value !== null && this.selectedLevels[index].value !== undefined){
+          this.selectedLevels[index].value = !this.selectedLevels[index].value;
+        }
+      }
     }
   }
 
-  public loadDefaultConfigJson(): void{
-    this._pomelogService.loadDefaultConfigFile();
+  // Determine if the level on click is current selected
+  public isLevelSelected(level: string): boolean{
+    if(!this.selectedLevels.find(x => x.key === level))
+      return false;
+    if(this.selectedLevels.find(x => x.key === level)?.value === false)
+      return false;
+    
+    return true;
   }
 }

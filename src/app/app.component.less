@@ -9,6 +9,18 @@
         margin: auto;
         padding: 20px;
 
+        .levels{
+            padding: 10px;
+            border-radius: 5px;
+            margin-right: 10px;
+            cursor: pointer;
+            color: #FFFFFF;
+        }
+
+        .opacity{
+            opacity: 0.5;
+        }
+
         .toolbar-section{
             width: 100%;
             height: 100px;
@@ -99,12 +111,56 @@
                 color: red;
             }
         }
+
+        .filter-level-section{
+            width: 100%;
+            height: auto;
+            margin-top: 50px;
+            display: flex;
+
+            select{
+                width: 200px;
+                height: 45px;
+                border-radius: 10px;
+                margin-top: -10px;
+                margin-left: auto;
+                margin-right: 0;
+            }
+        }
+
+        .log-display-section{
+            width: 100%;
+            height: auto;
+            margin-top: 50px;
+            margin-bottom: 100px;
+
+            div{
+                width: 100%;
+                margin-bottom: 20px;
+                padding: 10px;
+
+                .timestamp{
+                    font-weight: bold;
+                    font-size: 20px;
+                }
+
+                .card-level{
+                    margin-left: 75%;
+                    cursor: default;
+                }
+
+                p{
+                    margin-top: 50px;
+                    word-break: break-all;
+                }
+            }
+        }
     }
 
     @media only screen and (max-width: 1600px){
         .wrapper{
             position: relative;
-            width: 70%;
+            width: 80%;
         }
     }
 
@@ -118,7 +174,7 @@
 
 .dark-mode-wrapper{
     width: 100%;
-    height: 1000px;
+    height: auto;
     margin: auto;
     background-color: #181717;
 
@@ -211,12 +267,70 @@
                 border: 1px solid #FFFFFF;
             }
         }
+
+        .filter-level-section{
+            width: 100%;
+            height: auto;
+            margin-top: 50px;
+            display: flex;
+
+            .levels{
+                padding: 10px;
+                border-radius: 5px;
+                margin-right: 10px;
+                cursor: pointer;
+                color: #FFFFFF;
+            }
+
+            select{
+                width: 200px;
+                height: 45px;
+                border-radius: 10px;
+                margin-top: -10px;
+                margin-left: auto;
+                margin-right: 0;
+                background-color: #181717;
+                border: 1px solid #FFFFFF;
+                color: #FFFFFF;
+            }
+        }
+
+        .log-display-section{
+            width: 100%;
+            height: auto;
+            margin-top: 50px;
+            margin-bottom: 100px;
+
+            .card{
+                width: 100%;
+                margin-bottom: 20px;
+                padding: 10px;
+                background-color: #181717;
+                border: 1px solid #FFFFFF;
+                color: #FFFFFF;
+
+                .timestamp{
+                    font-weight: bold;
+                    font-size: 20px;
+                }
+
+                .card-level{
+                    margin-left: 75%;
+                    cursor: default;
+                }
+
+                p{
+                    margin-top: 50px;
+                    word-break: break-all;
+                }
+            }
+        }
     }
 
     @media only screen and (max-width: 1600px){
         .wrapper{
             position: relative;
-            width: 70%;
+            width: 80%;
         }
     }
 

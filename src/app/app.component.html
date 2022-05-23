@@ -55,5 +55,38 @@
         <div *ngIf="filterCriteriaList.length > 0" class="filter-display-section">
             <p *ngFor="let filterCriteria of filterCriteriaList; let i = index" (click)="onFilterCriteriaRemove(i)">{{filterCriteria.filter}} - {{filterCriteria.criteria}} <i class="fa fa-times-circle" aria-hidden="true"></i></p>
         </div>
+
+        <!-- Application levels filter section -->
+        <div class="filter-level-section" *ngIf="selectedLog">
+            <div *ngIf="selectedLog.value && !darkMode">
+                <span *ngFor="let levelSchema of selectedLog.value">
+                    <span *ngIf="levelSchema.level" [ngStyle]="{'background-color': levelSchema.color}" [ngClass]="{'opacity': isLevelSelected(levelSchema.level)}" class="levels" (click)="onLevelSelected(levelSchema.level)">
+                        {{levelSchema.level}}
+                    </span>
+                </span>
+            </div>
+            <div *ngIf="selectedLog.value && darkMode">
+                <span *ngFor="let levelSchema of selectedLog.value">
+                    <span *ngIf="levelSchema.level" [ngStyle]="{'border': '1px solid' + levelSchema.color}" [ngClass]="{'opacity': isLevelSelected(levelSchema.level)}" class="levels" (click)="onLevelSelected(levelSchema.level)">
+                        {{levelSchema.level}}
+                    </span>
+                </span>
+            </div>
+            <select #option (change)="loadSelectedLogSchema(option.value)">
+                <option value="none" selected disabled hidden>{{selectedLog.key}}</option>
+                <option *ngFor="let log of logs" [value]="log">{{log}}</option>
+            </select>
+        </div><hr/>
+
+        <!-- Application logs display section -->
+        <div class="log-display-section">
+            <div class="card" *ngFor="let line of fileLines">
+                <div class="card-body">
+                    <span *ngIf="line.level && !darkMode" class="card-title"><span class="timestamp">{{line?.timeStamp}}</span> <span [ngStyle]="{'background-color': line.level?.color}" class="levels card-level">{{line.level?.level}}</span></span>
+                    <span *ngIf="line.level && darkMode" class="card-title"><span class="timestamp">{{line?.timeStamp}}</span> <span [ngStyle]="{'border': '1px solid' + line.level?.color}" class="levels card-level">{{line.level?.level}}</span></span>
+                    <p>{{line.line}}</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

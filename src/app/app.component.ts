@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LogFilterCriteria } from './models/log-filter-criteria.model';
 import { LogFilter } from './models/log-filter.model';
 import { LogLevel } from './models/log-level.model';
 import { LogLine } from './models/log-line.model';
@@ -14,11 +15,17 @@ export class AppComponent implements OnInit {
   public title: string = 'Pomelog';
   public darkMode: boolean = false;
   public file: any;
+  private _logFiler: LogFilterCriteria = {
+    levelFilter: [],
+    timeStampFilter: '',
+    keywordFilter: ''
+  };
 
   public filterCriteriaList: LogFilter[] = [];
   public selectedLog?: PomelogKeyValuePair<LogLevel[]>;
   public logs: string[] = [];
   public fileLines: LogLine[] = [];
+  private _fileLinesCopy: LogLine[] = [];
   public selectedLevels: PomelogKeyValuePair<boolean>[] = [];
 
   constructor(private _pomelogService: PomelogService){
@@ -65,6 +72,8 @@ export class AppComponent implements OnInit {
   // Load file
   public loadFile(file: File): void{
     this.fileLines = this._pomelogService.readFile(file, this.selectedLog as PomelogKeyValuePair<LogLevel[]>);
+    this._fileLinesCopy = this.fileLines;
+    this.refreshFile();
   }
 
   // Load available logs
@@ -91,6 +100,18 @@ export class AppComponent implements OnInit {
         }
       }
     }
+
+    let levelsTemp: string[] = [];
+
+    this.selectedLevels.forEach(l => {
+      if(l.value === true){
+        levelsTemp.push(l.key as string);
+      }
+    });
+
+    this._logFiler.levelFilter = levelsTemp;
+
+    this.refreshFile();
   }
 
   // Determine if the level on click is current selected
@@ -101,5 +122,27 @@ export class AppComponent implements OnInit {
       return false;
     
     return true;
+  }
+
+  public refreshFile(): void{
+    this.fileLines = this._fileLinesCopy;
+    this.fileLines = this.filterByLevels(this.fileLines);
+  }
+
+  // Filter file by levels
+  private filterByLevels(lines: LogLine[]): LogLine[]{
+    if(this._logFiler.levelFilter?.length as number > 0){
+      let filteredLines: LogLine[] = [];
+      let levelFilters: string[] = this._logFiler.levelFilter as string[];
+
+      lines.forEach(l => {
+        if(levelFilters.includes(l.level?.level as string))
+          filteredLines.push(l);
+      });
+
+      return filteredLines;
+    }
+
+    return this._fileLinesCopy;
   }
 }

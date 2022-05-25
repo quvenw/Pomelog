@@ -33,60 +33,57 @@ export class PomelogService extends LogConstant {
     { key: 'Monolog', value: this.logCategoryE }
   ];
 
-  constructor() { 
+  constructor() {
     super();
   }
 
-  public readFile(file: File, logSchema: PomelogKeyValuePair<LogLevel[]>): LogLine[]{
-    let fileLines: LogLine[] = []
+  public processFile(fileString: string, logSchema: PomelogKeyValuePair<LogLevel[]>): LogLine[] {
+    let fileLines: LogLine[] = [];
+    let result = fileString.trim().replace(/\r\n/g, '\n').split('\n');
 
-    if(file){
-      const fileReader = new FileReader();
+    if (result) {
+      for (let i = 0; i < result?.length; i++) {
+        let logLine: LogLine = {
+          line: result[i],
+          level: this.processFileLineLevel(result[i], logSchema.value as LogLevel[]),
+          timeStamp: this.processFileTimestamp(result[i])
+        };
 
-      fileReader.readAsText(file);
-      fileReader.onload = () => {
-        let result = fileReader?.result?.toString().trim().replace(/\r\n/g,'\n').split('\n');
-
-        result?.forEach(r => {
-          let logLine: LogLine = {
-            line: r,
-            level: this.processFileLineLevel(r, logSchema.value as LogLevel[]),
-            timeStamp: this.processFileTimestamp(r)
-          };
+        if (!logLine.level || !logLine.timeStamp) {
+          fileLines[fileLines.length - 1].line += ` ${logLine.line}`;
+        } else {
           fileLines.push(logLine);
-        });
+        }
       }
-
-      return fileLines;
     }
 
-    return [];
+    return fileLines;
   }
 
-  public getLogSchema(log: string): PomelogKeyValuePair<LogLevel[]>{
+  public getLogSchema(log: string): PomelogKeyValuePair<LogLevel[]> {
     let logSchema = this.logsPair.find(x => x.key === log) as PomelogKeyValuePair<LogLevel[]>;
     return logSchema;
   }
 
-  public getAvailableLogs(): string[]{
+  public getAvailableLogs(): string[] {
     return this.logs;
   }
 
-  private processFileLineLevel(line: string, levels: LogLevel[]): LogLevel{
+  private processFileLineLevel(line: string, levels: LogLevel[]): LogLevel {
     let findLevel: LogLevel = new LogLevel();
 
     levels?.forEach(level => {
-      if(line.includes(level?.level as string))
+      if (line.toLocaleLowerCase().includes(level?.level?.toLocaleLowerCase() as string))
         findLevel = level;
     });
 
     return findLevel;
   }
 
-  private processFileTimestamp(line: string): string{
+  private processFileTimestamp(line: string): string {
     let date = line.match("[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}");
-    
-    if(date){
+
+    if (date) {
       return date[0].toString();
     }
 

@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   private _logFiler: LogFilterCriteria = {
     levelFilter: [],
     timeStampFilter: '',
-    keywordFilter: ''
+    keywordFilter: []
   };
 
   public filterCriteriaList: LogFilter[] = [];
@@ -27,6 +27,9 @@ export class AppComponent implements OnInit {
   public fileLines: LogLine[] = [];
   private _fileLinesCopy: LogLine[] = [];
   public selectedLevels: PomelogKeyValuePair<boolean>[] = [];
+  public selectedTime: number = 0;
+  public copySource: string = '';
+  public inCopy: boolean = false;
 
   constructor(private _pomelogService: PomelogService){
   }
@@ -49,9 +52,11 @@ export class AppComponent implements OnInit {
         criteria: criteria
       };
 
-      if(!this.filterCriteriaList.includes(logFilter))
+      if(!this.filterCriteriaList.includes(logFilter)){
         this.filterCriteriaList.push(logFilter);
         element.value = '';
+        this.refreshFile();
+      }
     }
   }
 
@@ -59,20 +64,43 @@ export class AppComponent implements OnInit {
   public onFilterCriteriaRemove(index: number): void{
     if(index > -1){
       this.filterCriteriaList.splice(index, 1);
+      this.refreshFile();
     }
   }
 
   // Read file when selected
   public onFileSelected(e: any): void{
+    this.resetState();
     const uploadedFile: File = e.target.files[0];
     this.file = uploadedFile;
     this.loadFile(this.file);
   }
 
+  public onFleCopy(): void{
+    this.inCopy = !this.inCopy;
+  }
+
   // Load file
   public loadFile(file: File): void{
-    this.fileLines = this._pomelogService.readFile(file, this.selectedLog as PomelogKeyValuePair<LogLevel[]>);
+    if(!file)
+      return;
+    
+    const fileReader = new FileReader();
+    fileReader.readAsText(file as Blob);
+    let content: string = '';
+
+    fileReader.onload = () => {
+      content = fileReader.result?.toString() as string;
+      this.fileLines = this._pomelogService.processFile(content, this.selectedLog as PomelogKeyValuePair<LogLevel[]>);
+      this._fileLinesCopy = this.fileLines;
+      this.refreshFile();
+    }
+  }
+
+  public loadCopy(): void{
+    this.fileLines = this._pomelogService.processFile(this.copySource as string, this.selectedLog as PomelogKeyValuePair<LogLevel[]>);
     this._fileLinesCopy = this.fileLines;
+    this.resetState();
     this.refreshFile();
   }
 
@@ -124,9 +152,13 @@ export class AppComponent implements OnInit {
     return true;
   }
 
+  // Refresh the filters
   public refreshFile(): void{
     this.fileLines = this._fileLinesCopy;
+
     this.fileLines = this.filterByLevels(this.fileLines);
+    this.fileLines = this.filterByTime(this.fileLines);
+    this.fileLines = this.filterByKeywords(this.fileLines);
   }
 
   // Filter file by levels
@@ -143,6 +175,59 @@ export class AppComponent implements OnInit {
       return filteredLines;
     }
 
-    return this._fileLinesCopy;
+    return lines;
+  }
+
+  // Filter file by time
+  private filterByTime(lines: LogLine[]): LogLine[]{
+    let filteredLines: LogLine[] = [];
+
+    if(this.selectedTime == 0)
+      return lines;
+    
+    lines.forEach(line => {
+      let time: number = +(line.timeStamp?.split(':')[0] as string);
+      let currentTime: number = new Date().getHours();
+
+      if(time >= currentTime - this.selectedTime)
+        filteredLines.push(line);
+    });
+
+    return filteredLines;
+  }
+
+  private filterByKeywords(lines: LogLine[]): LogLine[]{
+    let filteredLines: LogLine[] = [];
+    this._logFiler.keywordFilter = this.filterCriteriaList;
+    if(this._logFiler.keywordFilter.length === 0)
+      return lines;
+    
+    lines.forEach(ln => {
+      this._logFiler.keywordFilter?.forEach(kw => {
+        if(kw.criteria === 'Contains'){
+          if(ln.line?.toLowerCase()?.includes(kw.filter?.toLowerCase() as string))
+            filteredLines.push(ln);
+        }else{
+          if(!ln.line?.toLowerCase().includes(kw.filter?.toLocaleLowerCase() as string))
+            filteredLines.push(ln);
+        }
+      });
+    });
+
+    return filteredLines;
+  }
+
+  // Reset log filter state
+  private resetState(): void{
+    this.selectedLevels = [];
+    this.selectedTime = 0;
+    this.filterCriteriaList = [];
+    this.copySource = '';
+    this.inCopy = false;
+    this._logFiler = {
+      levelFilter: [],
+      timeStampFilter: '',
+      keywordFilter: []
+    };
   }
 }

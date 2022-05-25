@@ -12,9 +12,9 @@
                     <p>Import Log File</p>
                 </div>
 
-                <div class="col-3 toolbar-item">
-                    <i class="fa fa-file" aria-hidden="true"></i><br/>
-                    <p>Log Template</p>
+                <div class="col-3 toolbar-item" (click)="onFleCopy()">
+                    <i class="fa fa-clone" aria-hidden="true"></i><br/>
+                    <p>Copy Board</p>
                 </div>
 
                 <div class="col-3 toolbar-item">
@@ -29,6 +29,13 @@
             </div>
         </div>
 
+        <!-- Application copy section -->
+        <div class="copy-section" *ngIf="inCopy">
+            <textarea cols="10" rows="5" [(ngModel)]="copySource">
+            </textarea>
+            <button class="btn btn-primary process-btn" [disabled]="copySource.length === 0" (click)="loadCopy()">Process</button>
+        </div>
+
         <!-- Application filter section -->
         <div class="filter-section">
             <input #filterInput class="filter-input" type="text" placeholder="Filter by words"/>
@@ -40,12 +47,12 @@
 
             <button class="add-filter" (click)="onFilterCriteriaAdd(filterInput.value, selectInput.value, filterInput)"><i class="fa fa-plus" aria-hidden="true"></i></button>
 
-            <select class="time-window-input">
+            <select class="time-window-input" [(ngModel)]="selectedTime" (change)="refreshFile()">
                 <option value="0">All time</option>
-                <option value="1">12 hrs</option>
-                <option value="2">6 hrs</option>
+                <option value="12">12 hrs</option>
+                <option value="6">6 hrs</option>
                 <option value="3">3 hrs</option>
-                <option value="4">1 hrs</option>
+                <option value="1">1 hrs</option>
             </select>
 
             <button class="search-filter"><i class="fa fa-search" aria-hidden="true"></i></button>
